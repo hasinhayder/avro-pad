@@ -1,14 +1,9 @@
 'use strict';
 
-$(function () {
-
+(function($){
   $('#wrapper').show();
   $('#loader').slideUp().remove();
-    if(customDict) {
-        for (var i in customDict) {
-            store(i, customDict[i]);
-        }
-    }
+
 
   var KEY_CODE,
       isHorizontal,
@@ -46,15 +41,31 @@ $(function () {
     N: 78
   };
 
-    helpers = {
-        'tir':'টির',
-        'tar':'টার',
-        'ti':'টি',
-        'ta':'টা',
-        'tite':'টিতে',
-        'e': 'ে',
-        'er':'ের'
-    }
+  var helpers = {
+      'tir':'টির',
+      'tar':'টার',
+      'ti':'টি',
+      'ta':'টা',
+      'tite':'টিতে',
+      'e': 'ে',
+      'er':'ের',
+      'gulo':'গুলো',
+      'guli':'গুলি',
+      'gulote':'গুলোতে',
+      'gulite':'গুলিতে',
+      'guloke':'গুলোকে',
+      'gulike':'গুলিকে',
+      'er':'ের',
+  }
+
+  if(customDict) {
+      for (var i in customDict) {
+          store(i, customDict[i]);
+          for(var j in helpers ){
+              store(i+j,customDict[i]+helpers[j]);
+          }
+      }
+  }
 
   //Show incompatibily alert
   if (navigator.userAgent.match(/Android/i)){
@@ -206,15 +217,21 @@ $(function () {
         }, 500);
         return value;
       },
+      highlighter: function(li, query) {
+        return li;
+      },
       sorter: function (query, items, search_key) {
         return items;
       },
       tpl_eval: function (tpl, map) {
         try {
-          if(selectedIndex === map.id) tpl = selectedTpl;
-          return tpl.replace(/\$\{([^\}]*)\}/g, function(tag, key, pos) {
-            return map[key];
-          });
+          if(selectedIndex === map.id) {
+            tpl = selectedTpl;
+          }
+          var tmpHTML = $(tpl);
+          tmpHTML.attr('data-value', map.name);
+          tmpHTML.find('a').html(map.name);
+          return $("<p>").append(tmpHTML).html(); //jQuery object to html string
         } catch (error) {
           return '';
         }
@@ -279,6 +296,7 @@ $(function () {
     var view, _ref;
     view = (_ref = this.controller()) != null ? _ref.view : void 0;
     if (!(view && view.visible())) {
+      runningEvent = 0; // when writing english or using system IM, keep event to 0.
       return;
     }
     switch (e.keyCode) {
@@ -375,5 +393,8 @@ $(function () {
   }
 
   handleAppCache();
+})(jQuery);
 
-});
+  
+
+

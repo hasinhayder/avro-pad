@@ -1,37 +1,42 @@
-var gulp = require('gulp'),
-    rev = require('gulp-rev'),
-    clean = require('gulp-clean'),
-    lr = require('gulp-livereload'),
-    useref = require('gulp-useref'),
-    filter = require('gulp-filter'),
-    uglify = require('gulp-uglify'),
-    manifest = require('gulp-manifest'),
-    filesize = require('gulp-filesize'),
-    minifyCss = require('gulp-minify-css'),
-    revReplace = require('gulp-rev-replace'),
-    opn = require('opn'),
-    chalk = require('chalk'),
-    connect = require('connect'),
-    src = 'src',
+var gulp        = require('gulp'),
+    del         = require('del'),
+    rev         = require('gulp-rev'),
+    lr          = require('gulp-livereload'),
+    useref      = require('gulp-useref'),
+    filter      = require('gulp-filter'),
+    uglify      = require('gulp-uglify'),
+    manifest    = require('gulp-manifest'),
+    filesize    = require('gulp-filesize'),
+    minifyCss   = require('gulp-minify-css'),
+    revReplace  = require('gulp-rev-replace'),
+    opn         = require('opn'),
+    chalk       = require('chalk'),
+    connect     = require('connect'),
+    serveStatic = require('serve-static');
+
+// Config Variables
+var src   = 'src',
     build = 'build',
-    host = 'localhost';
+    host  = 'localhost';
 
-gulp.task('server', function(next) {
-  var server = connect(),
-      port = process.env.DEVPORT || 8080;
-
-  server
-    .use(connect.static(src))
+// Create a connect Server
+function server(host, port, path, next) {
+  connect()
+    .use(serveStatic(path))
     .listen(port, next)
     .on('listening', function () {
         console.log(chalk.green('Started dev server on http://' + host + ':' + port));
         opn('http://' + host + ':' + port);
     });
+}
+
+// Tasks
+gulp.task('server', function (next) {
+  server(host, process.env.DEVPORT || 8080, src, next);
 });
 
-gulp.task('clean', function () {
-  return gulp.src(build, {read: false})
-    .pipe(clean());
+gulp.task('clean', function (next) {
+  del(build, next);
 });
 
 gulp.task('images', ['clean'], function () {
@@ -39,24 +44,25 @@ gulp.task('images', ['clean'], function () {
     .pipe(gulp.dest(build));
 });
 
-gulp.task('manifest', ['assets'], function(){
+gulp.task('manifest', ['assets'], function (){
   gulp.src([build + '/**'])
     .pipe(manifest({
-      hash: true,
-      preferOnline: true,
-      network: ['http://*', 'https://*', '*'],
-      filename: 'app.appcache',
-      exclude: ['app.appcache', 'index.html', 'images/avroim_og.jpg']
+      hash         : true,
+      preferOnline : true,
+      network      : ['http://*', 'https://*', '*'],
+      filename     : 'app.appcache',
+      exclude      : ['app.appcache', 'index.html', 'images/avroim_og.jpg']
      }))
     .pipe(gulp.dest(build));
 });
 
 gulp.task('assets', ['clean', 'images'], function () {
-  var jsFilter = filter('**/*.js'),
-      cssFilter = filter('**/*.css');
+  var jsFilter     = filter('**/*.js'),
+      cssFilter    = filter('**/*.css'),
+      userefAssets = useref.assets();
 
   return gulp.src(src + '/*.html')
-    .pipe(useref.assets())
+    .pipe(userefAssets)
     .pipe(jsFilter)
     .pipe(uglify())
     .pipe(filesize())
@@ -66,15 +72,15 @@ gulp.task('assets', ['clean', 'images'], function () {
     .pipe(filesize())
     .pipe(cssFilter.restore())
     .pipe(rev())
-    .pipe(useref.restore())
+    .pipe(userefAssets.restore())
     .pipe(useref())
     .pipe(revReplace())
     .pipe(gulp.dest(build));
 });
 
-gulp.task('watch', ['server'], function() {
+gulp.task('watch', ['server'], function () {
   var server = lr();
-  gulp.watch(src + '/**').on('change', function(file) {
+  gulp.watch(src + '/**').on('change', function (file) {
     server.changed(file.path);
   });
 });
@@ -82,14 +88,5 @@ gulp.task('watch', ['server'], function() {
 gulp.task('build', ['images', 'assets', 'manifest']);
 
 gulp.task('default', ['build'], function (next) {
-  var server = connect(),
-      port = process.env.PORT || 8888;
-
-  server
-    .use(connect.static(build))
-    .listen(port, next)
-    .on('listening', function () {
-        console.log(chalk.green('Started server on http://' + host + ':' + port));
-        opn('http://' + host + ':' + port);
-    });
+  server(host, process.env.PORT || 8888, build, next);
 });
