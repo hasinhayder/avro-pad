@@ -19,5 +19,8 @@ var customDict = {
     'online':'অনলাইন',
     'package':'প্যাকেজ',
     'startup':'স্টার্টআপ',
-    'variable':'ভ্যারিয়েবল'
+    'variable':'ভ্যারিয়েবল',
+    'metabox': 'মেটাবক্স',
+    'framework': 'ফ্রেমওয়ার্ক',
+    'shortcode':'শর্টকোড'
 };
