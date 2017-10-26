@@ -22,5 +22,6 @@ var customDict = {
     'variable':'ভ্যারিয়েবল',
     'metabox': 'মেটাবক্স',
     'framework': 'ফ্রেমওয়ার্ক',
-    'shortcode':'শর্টকোড'
+    'shortcode':'শর্টকোড',
+    'chapter':'চ্যাপ্টার'
 };
