@@ -24,5 +24,8 @@ var customDict = {
     'framework': 'ফ্রেমওয়ার্ক',
     'shortcode':'শর্টকোড',
     'chapter':'চ্যাপ্টার',
-    'structure':'স্ট্রাকচার'
+    'structure':'স্ট্রাকচার',
+    'customizer':'কাস্টোমাইজার',
+    'plugin':'প্লাগইন',
+    'translation':'ট্রান্সলেশন'
 };
