@@ -23,5 +23,6 @@ var customDict = {
     'metabox': 'মেটাবক্স',
     'framework': 'ফ্রেমওয়ার্ক',
     'shortcode':'শর্টকোড',
-    'chapter':'চ্যাপ্টার'
+    'chapter':'চ্যাপ্টার',
+    'structure':'স্ট্রাকচার'
 };
