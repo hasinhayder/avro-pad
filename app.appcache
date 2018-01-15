@@ -1,0 +1,20 @@
+CACHE MANIFEST
+
+
+CACHE:
+css/app-08f143a4.css
+images/apple-touch-icon.png
+images/logo-secondary.png
+js/app-d2576378.js
+
+
+NETWORK:
+http://*
+https://*
+*
+
+
+SETTINGS:
+prefer-online
+
+# hash: 55915b0eefd9b6cda9481460f591fb31698ca252a21f3e45af66647500d76b25
